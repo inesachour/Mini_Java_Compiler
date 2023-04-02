@@ -46,21 +46,56 @@ class _HomePageState extends State<HomePage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     ElevatedButton(
-                      child: Text("Importer fichier", style: TextStyle(color: Colors.blue),),
+                      child: Row(
+                        children: [
+                          Icon(Icons.file_download, color: Colors.blue,),
+                          SizedBox(width: 6,),
+                          Text("Import File", style: TextStyle(color: Colors.blue),),
+                        ],
+                      ),
                       onPressed: (){
                       },
                       style: ButtonStyle(
                         backgroundColor: MaterialStateProperty.all(Colors.white)
                       ),
                     ),
-                    ElevatedButton(
-                      child: Text("Compiler", style: TextStyle(color: Colors.blue)),
-                      onPressed: (){
-                      },
-                      style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all(Colors.white)
-                      ),
-                    ),
+                    Row(
+                      children: [
+                        ElevatedButton(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.code, color: Colors.red,),
+                              SizedBox(width: 6,),
+                              Text("Compile", style: TextStyle(color: Colors.red)
+                              ),
+                            ],
+                          ),
+                          onPressed: (){
+                          },
+                          style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all(Colors.white)
+                          ),
+                        ),
+                        SizedBox(width: deviceWidth*0.01,),
+                        ElevatedButton(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.play_arrow, color: Colors.green,),
+                              SizedBox(width: 6,),
+                              Text("Run", style: TextStyle(color: Colors.green)
+                              ),
+                            ],
+                          ),
+                          onPressed: (){
+                          },
+                          style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all(Colors.white)
+                          ),
+                        ),
+                      ],
+                    )
                   ],
                 ),
               ),
