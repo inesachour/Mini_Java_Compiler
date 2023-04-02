@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mini_java_compiler/services/file_service.dart';
 
 void main() {
   runApp(const MyApp());
@@ -25,6 +26,11 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
+  String code = "";
+  TextEditingController controller = TextEditingController();
+
+  @override
   @override
   Widget build(BuildContext context) {
 
@@ -53,7 +59,14 @@ class _HomePageState extends State<HomePage> {
                           Text("Import File", style: TextStyle(color: Colors.blue),),
                         ],
                       ),
-                      onPressed: (){
+                      onPressed: () async {
+                        String? fileContent = await read_file();
+                        if(fileContent != null){
+                          setState(() async {
+                            code = fileContent!;
+                            controller.text = code;
+                          });
+                        }
                       },
                       style: ButtonStyle(
                         backgroundColor: MaterialStateProperty.all(Colors.white)
@@ -107,10 +120,10 @@ class _HomePageState extends State<HomePage> {
               padding: EdgeInsets.only(left: deviceWidth*0.1,),
               child: Container(
                 decoration: BoxDecoration(
-                  //border: Border.all(color: Colors.black,),
                   color: Colors.white
                 ),
                 child: TextField(
+                  controller: controller,
                   keyboardType: TextInputType.multiline,
                   cursorColor: Colors.grey,
                   maxLines: null,
@@ -142,7 +155,7 @@ class _HomePageState extends State<HomePage> {
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: TextField(
-                          controller: TextEditingController(text: "OK"),
+                          controller: TextEditingController(text: "test"),
                           enabled: false,
                           decoration: InputDecoration(
                             border: OutlineInputBorder(
