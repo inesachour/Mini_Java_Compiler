@@ -5,6 +5,10 @@ void main() {
   runApp(const MyApp());
 }
 
+//TODO saving file ??
+//TODO Compile
+//TODO lines number
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
