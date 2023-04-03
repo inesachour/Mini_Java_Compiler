@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mini_java_compiler/services.dart';
+import 'package:flutter/services.dart';
+import 'package:mini_java_compiler/compiler_services.dart';
 import 'package:tuple/tuple.dart';
 
 void main() {
@@ -36,6 +37,10 @@ class _HomePageState extends State<HomePage> {
   TextEditingController codeController = TextEditingController();
   TextEditingController consoleController = TextEditingController();
   Tuple2<bool,String> result = Tuple2(false, "");
+  FocusNode _focusNode = FocusNode();
+  FocusNode _codeFocusNode = FocusNode();
+
+
 
   @override
   @override
@@ -67,9 +72,9 @@ class _HomePageState extends State<HomePage> {
                         ],
                       ),
                       onPressed: () async {
-                        String? fileContent = await read_file();
+                        String? fileContent = await readFile();
                         if(fileContent != null){
-                          setState(() async {
+                          setState(() {
                             code = fileContent!;
                             codeController.text = code;
                           });
@@ -92,10 +97,10 @@ class _HomePageState extends State<HomePage> {
                             ],
                           ),
                           onPressed: !codeExists ? null : () async {
-                            var r = await compile_code();
+                            await writeFile(codeController.text);
+                            var r = await compileCode();
                             setState((){
                               result = r;
-                              print(r.item1);
                               if(!r.item1){
                                 consoleController.text = "COMPILED SUCCESSFULLY";
                               }
@@ -141,17 +146,27 @@ class _HomePageState extends State<HomePage> {
                 decoration: BoxDecoration(
                   color: Colors.white
                 ),
-                child: TextField(
-                  controller: codeController,
-                  keyboardType: TextInputType.multiline,
-                  cursorColor: Colors.grey,
-                  maxLines: null,
-                  onChanged: (value){
-                    setState(() {});
-                  },
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide.none,
+                child: Actions(
+                  actions: {InsertTabIntent: InsertTabAction()},
+                  child: Shortcuts(
+                    shortcuts: {
+                      LogicalKeySet(LogicalKeyboardKey.tab):
+                      InsertTabIntent(8, codeController)
+                    },
+                    child: TextField(
+                      //focusNode: _codeFocusNode,
+                      controller: codeController,
+                      keyboardType: TextInputType.multiline,
+                      cursorColor: Colors.grey,
+                      maxLines: null,
+                      onChanged: (value){
+                        setState(() {});
+                      },
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -202,3 +217,36 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
+class InsertTabIntent extends Intent {
+  const InsertTabIntent(this.numSpaces, this.textController);
+  final int numSpaces;
+  final TextEditingController textController;
+}
+
+class InsertTabAction extends Action {
+  @override
+  Object invoke(covariant Intent intent) {
+    if (intent is InsertTabIntent) {
+      final oldValue = intent.textController.value;
+      final newComposing = TextRange.collapsed(oldValue.composing.start);
+      final newSelection = TextSelection.collapsed(
+          offset: oldValue.selection.start + intent.numSpaces);
+
+      final newText = StringBuffer(oldValue.selection.isValid
+          ? oldValue.selection.textBefore(oldValue.text)
+          : oldValue.text);
+      for (var i = 0; i < intent.numSpaces; i++) {
+        newText.write(' ');
+      }
+      newText.write(oldValue.selection.isValid
+          ? oldValue.selection.textAfter(oldValue.text)
+          : '');
+      intent.textController.value = intent.textController.value.copyWith(
+        composing: newComposing,
+        text: newText.toString(),
+        selection: newSelection,
+      );
+    }
+    return '';
+  }
+}
