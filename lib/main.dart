@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mini_java_compiler/services/file_service.dart';
+import 'package:mini_java_compiler/services.dart';
+import 'package:tuple/tuple.dart';
 
 void main() {
   runApp(const MyApp());
@@ -32,14 +33,16 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
 
   String code = "";
-  TextEditingController controller = TextEditingController();
+  TextEditingController codeController = TextEditingController();
+  TextEditingController consoleController = TextEditingController();
+  Tuple2<bool,String> result = Tuple2(false, "");
 
   @override
   @override
   Widget build(BuildContext context) {
-
     double deviceHeight = MediaQuery.of(context).size.height;
     double deviceWidth = MediaQuery.of(context).size.width;
+    bool codeExists = codeController.text.trim() != "";
 
     return Scaffold(
       backgroundColor: Colors.grey.shade200,
@@ -68,7 +71,7 @@ class _HomePageState extends State<HomePage> {
                         if(fileContent != null){
                           setState(() async {
                             code = fileContent!;
-                            controller.text = code;
+                            codeController.text = code;
                           });
                         }
                       },
@@ -82,16 +85,28 @@ class _HomePageState extends State<HomePage> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(Icons.code, color: Colors.red,),
+                              Icon(Icons.code, color: codeExists ? Colors.red : Colors.grey.shade400,),
                               SizedBox(width: 6,),
-                              Text("Compile", style: TextStyle(color: Colors.red)
+                              Text("Compile", style: TextStyle(color: codeExists ? Colors.red : Colors.grey.shade400)
                               ),
                             ],
                           ),
-                          onPressed: (){
+                          onPressed: !codeExists ? null : () async {
+                            var r = await compile_code();
+                            setState((){
+                              result = r;
+                              print(r.item1);
+                              if(!r.item1){
+                                consoleController.text = "COMPILED SUCCESSFULLY";
+                              }
+                              else{
+                                consoleController.text = result.item2;
+                              }
+                            });
                           },
                           style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all(Colors.white)
+                            backgroundColor: MaterialStateProperty.all(codeExists ? Colors.white : Colors.grey),
+
                           ),
                         ),
                         SizedBox(width: deviceWidth*0.01,),
@@ -99,16 +114,16 @@ class _HomePageState extends State<HomePage> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(Icons.play_arrow, color: Colors.green,),
+                              Icon(Icons.play_arrow, color: codeExists ? Colors.green : Colors.grey.shade400,),
                               SizedBox(width: 6,),
-                              Text("Run", style: TextStyle(color: Colors.green)
+                              Text("Run", style: TextStyle(color: codeExists ? Colors.green: Colors.grey.shade400)
                               ),
                             ],
                           ),
-                          onPressed: (){
+                          onPressed: !codeExists ? null : (){
                           },
                           style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all(Colors.white)
+                              backgroundColor: MaterialStateProperty.all(codeExists ? Colors.white: Colors.grey)
                           ),
                         ),
                       ],
@@ -127,10 +142,13 @@ class _HomePageState extends State<HomePage> {
                   color: Colors.white
                 ),
                 child: TextField(
-                  controller: controller,
+                  controller: codeController,
                   keyboardType: TextInputType.multiline,
                   cursorColor: Colors.grey,
                   maxLines: null,
+                  onChanged: (value){
+                    setState(() {});
+                  },
                   decoration: InputDecoration(
                     border: OutlineInputBorder(
                       borderSide: BorderSide.none,
@@ -159,9 +177,13 @@ class _HomePageState extends State<HomePage> {
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: TextField(
-                          controller: TextEditingController(text: "test"),
+                          style: TextStyle(
+                            color: result.item1? Colors.red : Colors.green
+                          ),
+                          controller: consoleController,
                           enabled: false,
                           decoration: InputDecoration(
+
                             border: OutlineInputBorder(
                               borderSide: BorderSide.none,
                             ),
