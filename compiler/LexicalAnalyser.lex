@@ -1,8 +1,11 @@
 %{	
- #include <stdio.h>	
- #include <stdlib.h>		
- #include "TP2.tab.h"	                                                                         	
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
+ #include <math.h>	
+ #include "SyntaxicAnalyzer.tab.h"	                                                                         	
  			
+extern char nom[];
 %}
 
 %option yylineno
@@ -15,7 +18,7 @@ int       {chiffre}+
 intneg    ("-")?{chiffre}+
 boolean   (true|false)
 String    \"([^\"\\]|\\.)*\"
-iderrone  {chiffre}({lettre}|{chiffre})*
+iderrone  {chiffre}({lettre}|{chiffre}|"_")*
 par_ouvrante  (\()
 par_fermante  (\))
 acc_ouvrante "{"
@@ -73,16 +76,17 @@ COMMENT   "/*"([^*]|\*+[^*/])*\*+"/"
 
 "System.out.println"                         return  AFFICHAGE;
 
+{boolean}                                    return  Boolean;
+
 "int"                                        return  TYPE_INT;
 "boolean"                                    return  TYPE_BOOLEAN;
 "String"                                     return  TYPE_STRING;
 "void"                                       return  TYPE_VOID;
 
-{id}                                         return  Identifier;
+{id}                                         {strcpy(nom, yytext); return  Identifier;}
 
 {int}                                        return  Integer;
 {intneg}                                     return  IntegerNeg;
-{boolean}                                    return  Boolean;
 {String}                                     return  String;
 
 {and}                                        return  OP_AND;
@@ -90,7 +94,7 @@ COMMENT   "/*"([^*]|\*+[^*/])*\*+"/"
 {plus}                                       return  OP_PLUS;
 {moins}                                      return  OP_MOINS;
 {multiplication}                             return  OP_MULTIPLICATION;
-{affect}	                                   return  OPP_AFFECT;
+{affect}	                                 return  OPP_AFFECT;
 {neg}                                        return  OPP_NEG;
 
 {superieur}                                  return  OP_SUP;
@@ -102,14 +106,14 @@ COMMENT   "/*"([^*]|\*+[^*/])*\*+"/"
 
 
 
-{COMMENT_LINE}         		               printf(" COMMENT_LINE ");   
-{COMMENT}                                    printf(" COMMENT_MULTI_LINE ")  ;                          
+{COMMENT_LINE}         		               	 
+{COMMENT}                                                              
 
 <<EOF>>                                      return EOF;
 
-{iderrone}              {fprintf(stderr,"illegal identifier \'%s\' on line :%d\n",yytext,yylineno);}
+{iderrone}              {fprintf(stderr,"illegal identifier \'%s\' on line :%d\n",yytext,yylineno); exit(0);}
 
-.                       {fprintf(stderr,"invalid input \'%s\' on line :%d\n", yytext, yylineno);}
+.                       {fprintf(stderr,"invalid input \'%s\' on line :%d\n", yytext, yylineno); exit(0);}
 	
 
 %%

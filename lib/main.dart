@@ -35,7 +35,7 @@ class _HomePageState extends State<HomePage> {
 
   String code = "";
   TextEditingController codeController = TextEditingController();
-  TextEditingController consoleController = TextEditingController();
+  String text = "";
   Tuple2<bool,String> result = Tuple2(false, "");
   FocusNode _focusNode = FocusNode();
   FocusNode _codeFocusNode = FocusNode();
@@ -102,10 +102,10 @@ class _HomePageState extends State<HomePage> {
                             setState((){
                               result = r;
                               if(!r.item1){
-                                consoleController.text = "COMPILED SUCCESSFULLY";
+                                text = "COMPILED SUCCESSFULLY";
                               }
                               else{
-                                consoleController.text = result.item2;
+                                text = result.item2;
                               }
                             });
                           },
@@ -188,24 +188,23 @@ class _HomePageState extends State<HomePage> {
                   ),
                   Expanded(
                     child: Container(
+                      width: deviceWidth,
+                      height: deviceHeight*0.195,
                       color: Colors.white,
                       child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: TextField(
-                          style: TextStyle(
-                            color: result.item1? Colors.red : Colors.green
+                        padding: const EdgeInsets.only(top: 8.0, right: 8, left: 8),
+                        child: RichText(
+                          text: TextSpan(
+                            children: [
+                              TextSpan(text: text, style: TextStyle(color: result.item1? (result.item2.toLowerCase().contains("error") ? Colors.red: Colors.amber ): Colors.green ),),
+                              if(result.item1==true && result.item2.toLowerCase().contains("warning") && !result.item2.toLowerCase().contains("error"))
+                                TextSpan(text: "COMPILED SUCCESSFULLY", style: TextStyle(color: Colors.green)),
+                            ],
                           ),
-                          controller: consoleController,
-                          enabled: false,
-                          decoration: InputDecoration(
-
-                            border: OutlineInputBorder(
-                              borderSide: BorderSide.none,
-                            ),
-                          ),
-                        ),
+                        )
                       ),
                     ),
+
                   )
                 ],
               ),

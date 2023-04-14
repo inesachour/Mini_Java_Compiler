@@ -1,20 +1,27 @@
 class Factorial{
-    public static void main(String[] a){
-        System.out.println(new Fac().ComputeFac(10));
-    }
+int a;
+	public static void main(String[] args){
+		
+	}
 }
-                
-/* hy-h-h- /* s
-kjiuèjhg-tg- */ s
 
+class Fac {
+int a;
+	public int ComputeFac(String num, int a){
+				boolean s;
+		int sssss
+		int num_aux;	
+		a = true;
+		
+		if(!s)
+			sssss = 0;
+		else
+			num_aux = num * (this.ComputeFac(1,"x")) ;
+		return num_aux; 
+	}
+}
 
-  class Fac {
-    public int ComputeFac(int num){
-        int num_aux ;
-        if (num < 1)
-            num_aux = 1 ;
-        else
-            num_aux = num * (this.ComputeFac(num- 1)) ; /*mechant programme n'est pas ? */
-        return num_aux; 
-    }
+class f{
+	int a;
+	
 }
