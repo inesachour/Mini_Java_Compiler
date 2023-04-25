@@ -7,16 +7,17 @@ int a;
 
 class Fac {
 int a;
-	public int ComputeFac(String num, int a){
-				boolean s;
-		int sssss
+	public int ComputeFac(String num, int k){
+		
+		boolean s;
+		int sssss;
 		int num_aux;	
 		a = true;
 		
 		if(!s)
 			sssss = 0;
 		else
-			num_aux = num * (this.ComputeFac(1,"x")) ;
+			num_aux = num * (this.ComputeFac("",1)) ;
 		return num_aux; 
 	}
 }
