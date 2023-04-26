@@ -20,11 +20,15 @@ ENTREE_CODE creerCode (const char* code,int op){
 }
 
 void genererCode(){
-   
-    for (int f=0;f<indextab;f++){
-        printf("%s ",tabCodeInt[f].code_op);
-        if(tabCodeInt[f].operande!=-1)
-            printf("%d ",tabCodeInt[f].operande);
-        printf("\n");
+    FILE* file = fopen("D:\\Users\\Ines\\StudioProjects\\mini_java_compiler\\compiler\\code_generator.txt", "w"); 
+     if (!file) {
+        printf("Error: Could not open file.");
     }
+    for (int f = 0; f < indextab; f++) {
+        fprintf(file, "%s ", tabCodeInt[f].code_op);
+        if (tabCodeInt[f].operande != -1)
+            fprintf(file, "%d ", tabCodeInt[f].operande);
+        fprintf(file, "\n");
+    }
+    fclose(file); 
 }
