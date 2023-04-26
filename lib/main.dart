@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mini_java_compiler/compiler_services.dart';
@@ -6,10 +8,6 @@ import 'package:tuple/tuple.dart';
 void main() {
   runApp(const MyApp());
 }
-
-//TODO saving file ??
-//TODO Compile
-//TODO lines number
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -37,12 +35,20 @@ class _HomePageState extends State<HomePage> {
   TextEditingController codeController = TextEditingController();
   String text = "";
   Tuple2<bool,String> result = Tuple2(false, "");
-  FocusNode _focusNode = FocusNode();
-  FocusNode _codeFocusNode = FocusNode();
+  bool isCompiled = false;
+  String _fileContent = "";
 
+  Future<void> readCodeFile() async {
+    try {
+      final file = await File("D:\\Users\\Ines\\StudioProjects\\mini_java_compiler\\compiler\\code_generator.txt").readAsString();
+      setState(() {
+        _fileContent = file;
+      });
+    } catch (e) {
+      print("Error reading file: $e");
+    }
+  }
 
-
-  @override
   @override
   Widget build(BuildContext context) {
     double deviceHeight = MediaQuery.of(context).size.height;
@@ -103,9 +109,17 @@ class _HomePageState extends State<HomePage> {
                               result = r;
                               if(!r.item1){
                                 text = "COMPILED SUCCESSFULLY";
+                                isCompiled = true;
                               }
                               else{
                                 text = result.item2;
+                                if(result.item1==true && result.item2.toLowerCase().contains("warning") && !result.item2.toLowerCase().contains("error")){
+                                  isCompiled = true;
+                                }
+                                else{
+                                  isCompiled = false;
+                                }
+
                               }
                             });
                           },
@@ -119,16 +133,17 @@ class _HomePageState extends State<HomePage> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(Icons.play_arrow, color: codeExists ? Colors.green : Colors.grey.shade400,),
+                              Icon(Icons.play_arrow, color: codeExists && isCompiled ? Colors.green : Colors.grey.shade400,),
                               SizedBox(width: 6,),
-                              Text("Run", style: TextStyle(color: codeExists ? Colors.green: Colors.grey.shade400)
+                              Text("Generate Code", style: TextStyle(color: codeExists && isCompiled ? Colors.green: Colors.grey.shade400)
                               ),
                             ],
                           ),
                           onPressed: !codeExists ? null : (){
+                            readCodeFile();
                           },
                           style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all(codeExists ? Colors.white: Colors.grey)
+                              backgroundColor: MaterialStateProperty.all(codeExists && isCompiled ? Colors.white: Colors.grey)
                           ),
                         ),
                       ],
@@ -140,36 +155,63 @@ class _HomePageState extends State<HomePage> {
           ),
           Expanded(
             flex: 8,
-            child: Padding(
-              padding: EdgeInsets.only(left: deviceWidth*0.1,),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white
-                ),
-                child: Actions(
-                  actions: {InsertTabIntent: InsertTabAction()},
-                  child: Shortcuts(
-                    shortcuts: {
-                      LogicalKeySet(LogicalKeyboardKey.tab):
-                      InsertTabIntent(8, codeController)
-                    },
-                    child: TextField(
-                      //focusNode: _codeFocusNode,
-                      controller: codeController,
-                      keyboardType: TextInputType.multiline,
-                      cursorColor: Colors.grey,
-                      maxLines: null,
-                      onChanged: (value){
-                        setState(() {});
-                      },
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide.none,
+            child: Container(
+              height: deviceHeight*8/12,
+              padding: EdgeInsets.symmetric(horizontal: deviceWidth*0.06),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Container(
+                    width: deviceWidth*0.7,
+                    height: deviceHeight*8/12,
+                    decoration: BoxDecoration(
+                      color: Colors.white
+                    ),
+                    child: Actions(
+                      actions: {InsertTabIntent: InsertTabAction()},
+                      child: Shortcuts(
+                        shortcuts: {
+                          LogicalKeySet(LogicalKeyboardKey.tab):
+                          InsertTabIntent(8, codeController)
+                        },
+                        child: TextField(
+                          //focusNode: _codeFocusNode,
+                          controller: codeController,
+                          keyboardType: TextInputType.multiline,
+                          cursorColor: Colors.grey,
+                          maxLines: null,
+                          onChanged: (value){
+                            setState(() {});
+                          },
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide.none,
+                            ),
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
+                  SizedBox(width: deviceWidth*0.03,),
+                  Container(
+                    width: deviceWidth*0.15,
+                    height: deviceHeight*8/12,
+                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+                    decoration: BoxDecoration(
+                        color: Colors.white
+                    ),
+                    child: SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text("Generated Code :", style: TextStyle(color: Colors.red, fontWeight: FontWeight.w600, fontSize: 16,),textAlign: TextAlign.center),
+                            SizedBox(height: 5,),
+                            Text(_fileContent , style: TextStyle(color: Colors.grey),),
+                          ],
+                        ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
