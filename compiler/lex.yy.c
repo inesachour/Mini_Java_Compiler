@@ -509,7 +509,9 @@ char *yytext;
  #include "SyntaxicAnalyzer.tab.h"	                                                                         	
  			
 extern char nom[];
-#line 513 "lex.yy.c"
+extern int numval;
+extern int boolval;
+#line 515 "lex.yy.c"
 
 /* Macros after this point can all be overridden by user definitions in
  * section 1.
@@ -660,10 +662,10 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
 
-#line 47 "LexicalAnalyser.lex"
+#line 49 "LexicalAnalyser.lex"
 
 
-#line 667 "lex.yy.c"
+#line 669 "lex.yy.c"
 
 	if ( yy_init )
 		{
@@ -756,274 +758,274 @@ do_action:	/* This label is used only to access EOF actions. */
 	{ /* beginning of action switch */
 case 1:
 YY_RULE_SETUP
-#line 49 "LexicalAnalyser.lex"
+#line 51 "LexicalAnalyser.lex"
 /* pas d'actions */
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 50 "LexicalAnalyser.lex"
+#line 52 "LexicalAnalyser.lex"
 //++yylineno;
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 51 "LexicalAnalyser.lex"
+#line 53 "LexicalAnalyser.lex"
 return parenthese_ouvrante;
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 52 "LexicalAnalyser.lex"
+#line 54 "LexicalAnalyser.lex"
 return parenthese_fermante;
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 53 "LexicalAnalyser.lex"
+#line 55 "LexicalAnalyser.lex"
 return  accolade_ouvrante;
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 54 "LexicalAnalyser.lex"
+#line 56 "LexicalAnalyser.lex"
 return  accolade_fermante;
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 55 "LexicalAnalyser.lex"
+#line 57 "LexicalAnalyser.lex"
 return  crochet_ouvrant;
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 56 "LexicalAnalyser.lex"
+#line 58 "LexicalAnalyser.lex"
 return  crochet_fermant;
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 57 "LexicalAnalyser.lex"
+#line 59 "LexicalAnalyser.lex"
 return  point_virgule;
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 58 "LexicalAnalyser.lex"
+#line 60 "LexicalAnalyser.lex"
 return virgule;
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 59 "LexicalAnalyser.lex"
+#line 61 "LexicalAnalyser.lex"
 return  point;
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 61 "LexicalAnalyser.lex"
+#line 63 "LexicalAnalyser.lex"
 return  VISIBILITE_PUBLIC;
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 62 "LexicalAnalyser.lex"
+#line 64 "LexicalAnalyser.lex"
 return  VISIBILITE_PROTECTED;
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 63 "LexicalAnalyser.lex"
+#line 65 "LexicalAnalyser.lex"
 return  VISIBILITE_PRIVATE;
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 65 "LexicalAnalyser.lex"
+#line 67 "LexicalAnalyser.lex"
 return  IF_KEYWORD;
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 66 "LexicalAnalyser.lex"
+#line 68 "LexicalAnalyser.lex"
 return  ELSE_KEYWORD;
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 67 "LexicalAnalyser.lex"
+#line 69 "LexicalAnalyser.lex"
 return  WHILE_KEYWORD;
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 68 "LexicalAnalyser.lex"
+#line 70 "LexicalAnalyser.lex"
 return  NEW_KEYWORD;
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 69 "LexicalAnalyser.lex"
+#line 71 "LexicalAnalyser.lex"
 return  THIS_KEYWORD;
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 70 "LexicalAnalyser.lex"
+#line 72 "LexicalAnalyser.lex"
 return  MAIN_KEYWORD;
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 71 "LexicalAnalyser.lex"
+#line 73 "LexicalAnalyser.lex"
 return  RETURN_KEYWORD;
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 72 "LexicalAnalyser.lex"
+#line 74 "LexicalAnalyser.lex"
 return  CLASS_KEYWORD;
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 73 "LexicalAnalyser.lex"
+#line 75 "LexicalAnalyser.lex"
 return  EXTENDS_KEYWORD;
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 74 "LexicalAnalyser.lex"
+#line 76 "LexicalAnalyser.lex"
 return  STATIC_KEYWORD;
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 75 "LexicalAnalyser.lex"
+#line 77 "LexicalAnalyser.lex"
 return  LENGTH_KEYWORD;
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 77 "LexicalAnalyser.lex"
+#line 79 "LexicalAnalyser.lex"
 return  AFFICHAGE;
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 79 "LexicalAnalyser.lex"
-return  Boolean;
+#line 81 "LexicalAnalyser.lex"
+{if(strcmp(yytext, "true") == 0) boolval = 1; else boolval=0; return  Boolean;}
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 81 "LexicalAnalyser.lex"
+#line 83 "LexicalAnalyser.lex"
 return  TYPE_INT;
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 82 "LexicalAnalyser.lex"
+#line 84 "LexicalAnalyser.lex"
 return  TYPE_BOOLEAN;
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 83 "LexicalAnalyser.lex"
+#line 85 "LexicalAnalyser.lex"
 return  TYPE_STRING;
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 84 "LexicalAnalyser.lex"
+#line 86 "LexicalAnalyser.lex"
 return  TYPE_VOID;
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 86 "LexicalAnalyser.lex"
+#line 88 "LexicalAnalyser.lex"
 {strcpy(nom, yytext); return  Identifier;}
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 88 "LexicalAnalyser.lex"
-return  Integer;
+#line 90 "LexicalAnalyser.lex"
+{numval = atoi(yytext);return Integer;}
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 89 "LexicalAnalyser.lex"
+#line 91 "LexicalAnalyser.lex"
 return  IntegerNeg;
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 90 "LexicalAnalyser.lex"
+#line 92 "LexicalAnalyser.lex"
 return  String;
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 92 "LexicalAnalyser.lex"
+#line 94 "LexicalAnalyser.lex"
 return  OP_AND;
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 93 "LexicalAnalyser.lex"
+#line 95 "LexicalAnalyser.lex"
 return  OP_OR;
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 94 "LexicalAnalyser.lex"
+#line 96 "LexicalAnalyser.lex"
 return  OP_PLUS;
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 95 "LexicalAnalyser.lex"
+#line 97 "LexicalAnalyser.lex"
 return  OP_MOINS;
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 96 "LexicalAnalyser.lex"
+#line 98 "LexicalAnalyser.lex"
 return  OP_MULTIPLICATION;
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 97 "LexicalAnalyser.lex"
+#line 99 "LexicalAnalyser.lex"
 return  OPP_AFFECT;
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 98 "LexicalAnalyser.lex"
+#line 100 "LexicalAnalyser.lex"
 return  OPP_NEG;
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 100 "LexicalAnalyser.lex"
+#line 102 "LexicalAnalyser.lex"
 return  OP_SUP;
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 101 "LexicalAnalyser.lex"
+#line 103 "LexicalAnalyser.lex"
 return  OP_SUP_EG;
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 102 "LexicalAnalyser.lex"
+#line 104 "LexicalAnalyser.lex"
 return  OP_INF;
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 103 "LexicalAnalyser.lex"
+#line 105 "LexicalAnalyser.lex"
 return  OP_INF_EG;
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 104 "LexicalAnalyser.lex"
+#line 106 "LexicalAnalyser.lex"
 return  OP_EG;
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 105 "LexicalAnalyser.lex"
+#line 107 "LexicalAnalyser.lex"
 return  OP_DIFF;
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 109 "LexicalAnalyser.lex"
+#line 111 "LexicalAnalyser.lex"
 
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 110 "LexicalAnalyser.lex"
+#line 112 "LexicalAnalyser.lex"
 
 	YY_BREAK
 case YY_STATE_EOF(INITIAL):
-#line 112 "LexicalAnalyser.lex"
+#line 114 "LexicalAnalyser.lex"
 return EOF;
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 114 "LexicalAnalyser.lex"
+#line 116 "LexicalAnalyser.lex"
 {fprintf(stderr,"illegal identifier \'%s\' on line :%d\n",yytext,yylineno); exit(0);}
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
-#line 116 "LexicalAnalyser.lex"
+#line 118 "LexicalAnalyser.lex"
 {fprintf(stderr,"invalid input \'%s\' on line :%d\n", yytext, yylineno); exit(0);}
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 119 "LexicalAnalyser.lex"
+#line 121 "LexicalAnalyser.lex"
 ECHO;
 	YY_BREAK
-#line 1027 "lex.yy.c"
+#line 1029 "lex.yy.c"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -1905,7 +1907,7 @@ int main()
 	return 0;
 	}
 #endif
-#line 119 "LexicalAnalyser.lex"
+#line 121 "LexicalAnalyser.lex"
 
 
 int yywrap()

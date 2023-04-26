@@ -6,6 +6,8 @@
  #include "SyntaxicAnalyzer.tab.h"	                                                                         	
  			
 extern char nom[];
+extern int numval;
+extern int boolval;
 %}
 
 %option yylineno
@@ -76,7 +78,7 @@ COMMENT   "/*"([^*]|\*+[^*/])*\*+"/"
 
 "System.out.println"                         return  AFFICHAGE;
 
-{boolean}                                    return  Boolean;
+{boolean}                                    {if(strcmp(yytext, "true") == 0) boolval = 1; else boolval=0; return  Boolean;}
 
 "int"                                        return  TYPE_INT;
 "boolean"                                    return  TYPE_BOOLEAN;
@@ -85,7 +87,7 @@ COMMENT   "/*"([^*]|\*+[^*/])*\*+"/"
 
 {id}                                         {strcpy(nom, yytext); return  Identifier;}
 
-{int}                                        return  Integer;
+{int}                                        {numval = atoi(yytext);return Integer;}
 {intneg}                                     return  IntegerNeg;
 {String}                                     return  String;
 

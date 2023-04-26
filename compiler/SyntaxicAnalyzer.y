@@ -3,9 +3,16 @@
 
 #include <stdio.h>	
 #include "Semantic.c"
+#include "CodeGenerator.c"
 
 extern char *yytext;
+int numval;
+int boolval;
 char nom[256];
+char* opCode;
+int indexIf;
+int indexWhile1;
+int indexWhile2;
 
 int yyerror(char const *msg);	
 int yylex(void);
@@ -73,7 +80,7 @@ Program	            :	MainClass classdec;
 
 classdec            :   ClassDeclaration classdec | ;
 
-MainClass	        :	CLASS_KEYWORD ID {checkIdentifier(nom, tOther ,class, yylineno);} accolade_ouvrante vardec VISIBILITE_PUBLIC  STATIC_KEYWORD TYPE_VOID MAIN_KEYWORD { checkIdentifier("main", tVoid, fonction, yylineno); } parenthese_ouvrante TYPE_STRING crochet_ouvrant crochet_fermant ID {checkIdentifier(nom, tString, parametre, yylineno);} parenthese_fermante accolade_ouvrante vardec stat accolade_fermante {fonctionEnd();}  accolade_fermante {classEnd();};
+MainClass	        :	{tabCodeInt[indextab]=creerCode("ENTREE",-1); indextab++;} CLASS_KEYWORD ID {checkIdentifier(nom, tOther ,class, yylineno);} accolade_ouvrante vardec VISIBILITE_PUBLIC  STATIC_KEYWORD TYPE_VOID MAIN_KEYWORD {tabCodeInt[indextab]=creerCode("ENTREE",-1); indextab++;} { checkIdentifier("main", tVoid, fonction, yylineno); } parenthese_ouvrante TYPE_STRING crochet_ouvrant crochet_fermant ID {checkIdentifier(nom, tString, parametre, yylineno);} parenthese_fermante accolade_ouvrante vardec stat accolade_fermante {fonctionEnd();} {tabCodeInt[indextab]=creerCode("SORTIE",-1); indextab++;} accolade_fermante {classEnd();} {tabCodeInt[indextab]=creerCode("SORTIE",-1); indextab++;};
 
 vardec              :   VarDeclaration vardec | ;
 
@@ -81,7 +88,7 @@ methoddec           : 	MethodDeclaration methoddec | ;
 
 extend_key_id       : 	EXTENDS_KEYWORD ID | ;
 
-ClassDeclaration	:	CLASS_KEYWORD ID {checkIdentifier(nom, tOther ,class, yylineno);} extend_key_id accolade_ouvrante vardec methoddec accolade_fermante {classEnd();}
+ClassDeclaration	:	{tabCodeInt[indextab]=creerCode("ENTREE",-1); indextab++;} CLASS_KEYWORD ID {checkIdentifier(nom, tOther ,class, yylineno);} extend_key_id accolade_ouvrante vardec methoddec accolade_fermante {classEnd();} {tabCodeInt[indextab]=creerCode("SORTIE",-1); indextab++;}
 
 VarDeclaration	    :	Type ID {checkIdentifier(nom, type ,variable , yylineno);} point_virgule
 					|	error ID point_virgule            {yyerror (" Error : Type attendu en ligne : "); YYABORT}
@@ -92,7 +99,7 @@ virgule_type_ID :  virgule Type ID {checkIdentifier(nom, type ,variable , yyline
 
 type_ID     : Type ID {checkIdentifier(nom, type ,variable , yylineno);} virgule_type_ID | ;
 
-MethodDeclaration	:	VISIBILITE_PUBLIC Type ID {checkIdentifier(nom, type , fonction, yylineno);} parenthese_ouvrante {inParam();} type_ID {outParam();} parenthese_fermante accolade_ouvrante vardec stat RETURN_KEYWORD Expression point_virgule accolade_fermante {fonctionEnd();};
+MethodDeclaration	:	{tabCodeInt[indextab]=creerCode("ENTREE",-1); indextab++;} VISIBILITE_PUBLIC Type ID {checkIdentifier(nom, type , fonction, yylineno);} parenthese_ouvrante {inParam();} type_ID {outParam();} parenthese_fermante accolade_ouvrante vardec stat RETURN_KEYWORD Expression point_virgule accolade_fermante {fonctionEnd();} {tabCodeInt[indextab]=creerCode("SORTIE",-1);indextab++;};
 
 Type	            :	TYPE_INT crochet_ouvrant crochet_fermant {type=tInt} 
 	                    |	TYPE_BOOLEAN {type=tBoolean}
@@ -103,23 +110,27 @@ Type	            :	TYPE_INT crochet_ouvrant crochet_fermant {type=tInt}
 stat               : Statement stat | ;
 
 Statement	        :	accolade_ouvrante stat accolade_fermante
-	                |	IF_KEYWORD parenthese_ouvrante Expression parenthese_fermante Statement ELSE_KEYWORD Statement
-	                |	WHILE_KEYWORD parenthese_ouvrante Expression parenthese_fermante Statement
+	                |	IF_KEYWORD parenthese_ouvrante Expression parenthese_fermante {tabCodeInt[indextab]=creerCode("SIFAUX",-1);indexIf=indextab;indextab++;} Statement ELSE_KEYWORD {tabCodeInt[indextab]=creerCode("SAUT",-1);indextab++;tabCodeInt[indexIf].operande=indextab;indexIf=indextab-1;} Statement {tabCodeInt[indexIf].operande=indextab+1;}
+	                |	WHILE_KEYWORD {indexWhile1=indextab;} parenthese_ouvrante Expression parenthese_fermante {tabCodeInt[indextab]=creerCode("TANTQUEFAUX",-1);indexWhile2=indextab;indextab++;} Statement {tabCodeInt[indextab]=creerCode("TANTQUE",indexWhile1);indextab++;tabCodeInt[indexWhile2].operande=indextab;}
 	                |	AFFICHAGE parenthese_ouvrante Expression parenthese_fermante point_virgule
-	                |	ID {verifierVarDeclared(nom, yylineno);} {useVar(nom);} OPP_AFFECT {initVar(nom, yylineno);} Expression {verifierTypeAffectation(nom, typeAffect, yylineno);} point_virgule
+	                |	ID {verifierVarDeclared(nom, yylineno);} {useVar(nom);} {tabCodeInt[indextab]=creerCode("LDV",getAddress(nom,table_total));indextab++;} OPP_AFFECT {initVar(nom, yylineno);} Expression {verifierTypeAffectation(nom, typeAffect, yylineno);} point_virgule {tabCodeInt[indextab]=creerCode("STORE",getAddress(nom,table_total));indextab++;}
 	                |	ID crochet_ouvrant Expression crochet_fermant {verifierVarDeclared(nom, yylineno)} {initVar(nom, yylineno);} {useVar(nom);} OPP_AFFECT Expression point_virgule;
 
-op          : OP_AND | OP_INF | OP_PLUS | OP_MOINS | OP_MULTIPLICATION;
+op          : OP_AND  {opCode="AND";}
+			| OP_INF  {opCode="INF";}
+			| OP_PLUS  {opCode="ADD";}
+			| OP_MOINS  {opCode="SUB";}
+			| OP_MULTIPLICATION  {tabCodeInt[indextab]=creerCode("MUL",-1);indextab++;};
 
-Expression	        :	Expression op Expression
+Expression	        :	Expression op Expression {tabCodeInt[indextab]=creerCode(opCode,-1);indextab++;}
 	| 	Expression IntegerNeg {typeAffect = tInt;}
 	|	Expression crochet_ouvrant Expression crochet_fermant
 	|	Expression point LENGTH_KEYWORD {fonctionCallParameter(tInt, NULL, yylineno);} {typeAffect = tInt;}
-	|	Expression point ID {fonctionCallStart(nom, type, yylineno);} {typeAffect = type;} parenthese_ouvrante expr parenthese_fermante {verifierFonctionArguments(yylineno);}
-	|	Integer {fonctionCallParameter(tInt, NULL, yylineno);} {typeAffect = tInt;}
-	|	Boolean {fonctionCallParameter(tBoolean, NULL, yylineno);} {typeAffect = tBoolean;}
+	|	Expression point ID {fonctionCallStart(nom, type, yylineno);} {typeAffect = type;} parenthese_ouvrante expr parenthese_fermante {verifierFonctionArguments(yylineno);} {tabCodeInt[indextab]=creerCode("APPEL",getAddress(nom,table_total));indextab++;}
+	|	Integer {fonctionCallParameter(tInt, NULL, yylineno);} {typeAffect = tInt;} {tabCodeInt[indextab]=creerCode("LDC",numval);indextab++;}
+	|	Boolean {fonctionCallParameter(tBoolean, NULL, yylineno);} {typeAffect = tBoolean;} {tabCodeInt[indextab]=creerCode("LDC",boolval);indextab++;}
 	|	String {fonctionCallParameter(tString, NULL, yylineno);} {typeAffect = tString;}
-	|	ID {(verifierVarDeclared(nom, yylineno));} {verifierVarInitialise(nom, yylineno);} {useVar(nom);} {fonctionCallParameter(tInt, nom, yylineno);} {typeAffect = type;}
+	|	ID {(verifierVarDeclared(nom, yylineno));} {verifierVarInitialise(nom, yylineno);} {useVar(nom);} {fonctionCallParameter(tInt, nom, yylineno);} {typeAffect = type;} {tabCodeInt[indextab]=creerCode("LDV",getAddress(nom,table_total));indextab++;}
 	|	THIS_KEYWORD {fonctionCallParameter(tOther, NULL, yylineno);} {typeAffect = tOther;}
 	|	NEW_KEYWORD TYPE_INT crochet_ouvrant Expression crochet_fermant 
 	|	NEW_KEYWORD ID parenthese_ouvrante parenthese_fermante {fonctionCallParameter(tOther, NULL, yylineno);}
@@ -160,12 +171,15 @@ int main()
 	yyparse();
 	printf("\n");
 	endProgram();
+	//printf("\n");
+	//DisplaySymbolsTable(table_global);
+	//printf("\n");
+	//DisplaySymbolsTable(table_local);
 	printf("\n");
-	DisplaySymbolsTable(table_global);
-	printf("\n");
-	DisplaySymbolsTable(table_local);
+	genererCode();
 	destructSymbolsTable(table_local);
 	destructSymbolsTable(table_global);
+	
  
 }
 
