@@ -2365,12 +2365,11 @@ int main()
 	yyparse();
 	printf("\n");
 	endProgram();
-	//printf("\n");
-	//DisplaySymbolsTable(table_global);
-	//printf("\n");
-	//DisplaySymbolsTable(table_local);
 	printf("\n");
-	genererCode2();
+	DisplaySymbolsTable(table_global);
+	printf("\n");
+	DisplaySymbolsTable(table_local);
+	printf("\n");
 	genererCode();
 	destructSymbolsTable(table_local);
 	destructSymbolsTable(table_global);

@@ -53,13 +53,3 @@ void genererCode(){
     }
     fclose(file); 
 }
-
-void genererCode2(){
-   
-    for (int f=0;f<indextab;f++){
-        printf("%s ",tabCodeInt[f].code_op);
-        if(tabCodeInt[f].operande!=-1)
-            printf("%d ",tabCodeInt[f].operande);
-        printf("\n");
-    }
-}
