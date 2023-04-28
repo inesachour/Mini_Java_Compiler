@@ -139,7 +139,7 @@ class _HomePageState extends State<HomePage> {
                               ),
                             ],
                           ),
-                          onPressed: !codeExists ? null : (){
+                          onPressed: !codeExists && isCompiled ? null : (){
                             readCodeFile();
                           },
                           style: ButtonStyle(
@@ -172,7 +172,7 @@ class _HomePageState extends State<HomePage> {
                       child: Shortcuts(
                         shortcuts: {
                           LogicalKeySet(LogicalKeyboardKey.tab):
-                          InsertTabIntent(8, codeController)
+                          InsertTabIntent(2, codeController)
                         },
                         child: TextField(
                           //focusNode: _codeFocusNode,
